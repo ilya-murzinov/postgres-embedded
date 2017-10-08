@@ -1,5 +1,3 @@
-import           System.Info                  as SI (os)
-
 import           Database.PostgreSQL.Embedded
 
 main :: IO ()
@@ -13,4 +11,4 @@ main = do
 
     -- Start Postgres with cached distribution
     rc1 <- startPostgres sConfig dConfig
-    stopPostgres rc
+    stopPostgres rc1
