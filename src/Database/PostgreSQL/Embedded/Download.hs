@@ -13,7 +13,7 @@ import           Database.PostgreSQL.Embedded.Types
 
 data ArchiveType = Zip | Tar deriving (Eq)
 
-downloadPostgres :: Os -> Version -> IO (FilePath)
+downloadPostgres :: Os -> Version -> IO FilePath
 downloadPostgres os_ version_ = do
     home <- getHomeDirectory
 
@@ -35,8 +35,8 @@ downloadPostgres os_ version_ = do
             wget "-O" tmp $ base_download_url <> v <> suffix
 
             case aType of
-                Zip -> unzip' tmp
-                Tar -> tar "-xzvf" tmp
+                Zip -> unzip' "-q" tmp
+                Tar -> tar "-xzf" tmp
 
             return dist
 
