@@ -21,6 +21,6 @@ data RuntimeConfig = RuntimeConfig {
 }
 
 data DBConfig = DBConfig {
-    port     :: Int,
+    port     :: Integer,
     username :: String
 }

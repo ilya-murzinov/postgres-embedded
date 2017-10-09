@@ -1,5 +1,5 @@
 name:                postgres-embedded
-version:             0.1.0
+version:             0.1.1
 description:         Library for easily running embedded PostgreSQL server for tests
 homepage:            https://github.com/ilya-murzinov/postgres-embedded
 license:             MIT
@@ -22,8 +22,7 @@ library
                      , directory
                      , filepath
                      , shell-conduit
-                     , HDBC
-                     , HDBC-postgresql
+                     , network
   ghc-options:         -Wall
   default-language:    Haskell2010
 

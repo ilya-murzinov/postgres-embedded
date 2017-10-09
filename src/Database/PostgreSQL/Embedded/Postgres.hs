@@ -5,15 +5,16 @@ module Database.PostgreSQL.Embedded.Postgres
     ) where
 
 import           Control.Concurrent                    (threadDelay)
-import           Control.Exception                     (try)
+import           Control.Exception                     (SomeException, try)
 import           Data.Conduit.Shell                    (rm, run, shell)
 import           Data.List                             (isInfixOf)
 import           Data.Monoid                           ((<>))
-import           Database.HDBC                         (SqlError)
-import           Database.HDBC.PostgreSQL              (Connection,
-                                                        connectPostgreSQL)
+import           Network                               (PortID (..), connectTo)
 import           System.FilePath.Posix                 ((</>))
 import           System.Info                           (os)
+import           System.IO                             (Handle)
+
+
 
 import           Database.PostgreSQL.Embedded.Download
 import           Database.PostgreSQL.Embedded.Types
@@ -43,11 +44,10 @@ checkPostgresStarted :: DBConfig -> Int -> IO ()
 checkPostgresStarted config secs = checkPostgresStarted_ config secs >>= \_ -> return ()
     where
         checkPostgresStarted_ :: DBConfig -> Int -> IO Bool
-        checkPostgresStarted_ (DBConfig p u) n = do
-            let connStr = "postgres://" <> u <> "@localhost:" <> (show p) <> "/postgres"
+        checkPostgresStarted_ (DBConfig p _) n = do
             let oneSec = 1000000
 
-            res <- try $ connectPostgreSQL connStr :: IO (Either SqlError Connection)
+            res <- try $ connectTo "localhost" (PortNumber $ fromInteger p) :: IO (Either SomeException Handle)
             case res of
                 Left e -> if (n > 0) then
                     print e >>=
