@@ -6,9 +6,7 @@ module Database.PostgreSQL.Embedded.Postgres
 
 import           Control.Concurrent                    (threadDelay)
 import           Control.Exception                     (SomeException, try)
-import           Data.Conduit.Shell                    (grep, rm, run, shell,
-                                                        ($|))
-import           Data.Conduit.Shell.Segments           (strings)
+import           Data.Conduit.Shell                    (rm, run, shell)
 import           Data.List                             (isInfixOf)
 import           Data.Monoid                           ((<>))
 import           System.FilePath.Posix                 ((</>))
