@@ -1,5 +1,5 @@
 name:                postgres-embedded
-version:             0.1.3
+version:             0.1.4
 description:         Library for easily running embedded PostgreSQL server for tests
 homepage:            https://github.com/ilya-murzinov/postgres-embedded
 license:             MIT

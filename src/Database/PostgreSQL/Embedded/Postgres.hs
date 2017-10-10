@@ -18,7 +18,7 @@ import           Database.PostgreSQL.Embedded.Download
 import           Database.PostgreSQL.Embedded.Types
 
 startPostgres :: StartupConfig -> DBConfig -> IO RuntimeConfig
-startPostgres (StartupConfig version_ t) (DBConfig p u) = do
+startPostgres (StartupConfig version_ t) dConfig@(DBConfig p u) = do
     e <- downloadPostgres getOS version_
     let d = e </> "data"
     run $ do
@@ -26,7 +26,7 @@ startPostgres (StartupConfig version_ t) (DBConfig p u) = do
         shell $ e </> "bin" </> "pg_ctl" <> " -D " <> d <> " -o \"-F -p " <>
             (show p) <> "\"" <> " -l " <> (e </> "log") <> " start"
     let r = RuntimeConfig e d
-    checkPostgresStarted r t
+    checkPostgresStarted r dConfig t
     return $ r
     where
         getOS | "darwin" `isInfixOf` os = OSX
@@ -39,22 +39,19 @@ stopPostgres (RuntimeConfig e d) = run $ do
         shell $ e </> "bin" </> "pg_ctl" <> " -D " <> d <> " stop"
         rm "-rf" d
 
-checkPostgresStarted :: RuntimeConfig -> Int -> IO ()
-checkPostgresStarted config secs = checkPostgresStarted_ config secs >>= \_ -> return ()
+checkPostgresStarted :: RuntimeConfig -> DBConfig -> Int -> IO ()
+checkPostgresStarted (RuntimeConfig e _) (DBConfig p _) secs = checkPostgresStarted_ secs >>= \_ -> return ()
     where
-        checkPostgresStarted_ :: RuntimeConfig -> Int -> IO Bool
-        checkPostgresStarted_ (RuntimeConfig e d) n = do
+        checkPostgresStarted_ :: Int -> IO Bool
+        checkPostgresStarted_ n = do
             let oneSec = 1000000
-            let check = run $
-                        strings (
-                            shell (e </> "bin" </> "pg_ctl" <> " -D " <> d <> " status")
-                            $| grep "running") >>= \s -> return $ null s
+            let check = run $ shell (e </> "bin" </> "pg_isready" <> " -p " <> (show p) <> " -h localhost") >>= \_ -> return True
 
             res <- try check :: IO (Either SomeException Bool)
             let retry = if n > 0 then threadDelay oneSec >>=
-                            \_ -> checkPostgresStarted_ config (n - 1)
+                            \_ -> checkPostgresStarted_ (n - 1)
                         else
                             return False
             case res of
                 Left err   -> print err >>= \_ -> retry
-                Right res1 -> if res1 then retry else return True
+                Right res1 -> if (not res1) then retry else return True
