@@ -1,7 +1,3 @@
-## 0.1.6
-
-Still unstable version for testing
-
-## 0.1.5
+## 0.1.7
 
 Unstable version for testing
