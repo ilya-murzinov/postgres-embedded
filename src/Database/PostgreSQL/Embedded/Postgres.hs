@@ -16,6 +16,11 @@ import           System.Info                           (os)
 import           Database.PostgreSQL.Embedded.Download
 import           Database.PostgreSQL.Embedded.Types
 
+{-|
+Starts PostgreSQL instance with given config.
+
+Returns @RuntimeConfig@ that is required for @stopPostgres@.
+-}
 startPostgres :: StartupConfig -> DBConfig -> IO RuntimeConfig
 startPostgres (StartupConfig сlean version_ t) dConfig@(DBConfig p u) = do
     e <- downloadPostgres getOS version_
@@ -41,6 +46,11 @@ startPostgres (StartupConfig сlean version_ t) dConfig@(DBConfig p u) = do
               | "win" `isInfixOf` os = Win
               | otherwise = error $ "Unsupported platform" <> os
 
+{-|
+Stops PostgreSQL instance.
+
+Doesn't remove data directory.
+-}
 stopPostgres :: RuntimeConfig -> IO ()
 stopPostgres (RuntimeConfig e d) = run $
         shell $ e </> "bin" </> "pg_ctl" <> " -D " <> d <> " stop" <>

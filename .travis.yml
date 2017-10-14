@@ -17,4 +17,3 @@ cache:
   - $HOME/.cabal
   - $HOME/.stack
   - .stack-work
-  - $HOME/.postgres-embedded
