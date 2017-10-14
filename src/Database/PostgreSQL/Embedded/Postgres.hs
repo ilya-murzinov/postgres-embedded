@@ -29,11 +29,11 @@ startPostgres (StartupConfig сlean version_ t) dConfig@(DBConfig p u) = do
     run $ do
         shell $ e </> "bin" </> "initdb" <> " -A trust -U " <> u <> " -D " <> d <> " -E UTF-8"
         shell $ e </> "bin" </> "pg_ctl" <> " -D " <> d <> " -o \"-F -p " <>
-            (show p) <> "\"" <> " -l " <> (e </> "log") <> " start"
+            show p <> "\"" <> " -l " <> (e </> "log") <> " start"
 
     let r = RuntimeConfig e d
     checkPostgresStarted r dConfig t
-    return $ r
+    return r
 
     where
         getOS | "darwin" `isInfixOf` os = OSX
@@ -51,11 +51,11 @@ checkPostgresStarted (RuntimeConfig e _) (DBConfig p _) secs = checkPostgresStar
     where
         checkPostgresStarted_ :: Int -> IO Bool
         checkPostgresStarted_ n = do
-            let check = run $ shell (e </> "bin" </> "pg_isready" <> " -p " <> (show p) <> " -h localhost") >>= \_ -> return True
+            let check = run $ shell (e </> "bin" </> "pg_isready" <> " -p " <> show p <> " -h localhost") >>= \_ -> return True
 
             res <- try check :: IO (Either SomeException Bool)
             let retry = if n > 0 then checkPostgresStarted_ (n - 1)
                         else return False
             case res of
-                Left err   -> print err >>= \_ -> retry
-                Right res1 -> if (not res1) then retry else return True
+                Left err   -> print err >>= const retry
+                Right res1 -> if not res1 then retry else return True
