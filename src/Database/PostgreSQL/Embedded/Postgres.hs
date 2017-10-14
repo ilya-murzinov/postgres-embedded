@@ -8,7 +8,7 @@ import           Control.Exception                     (SomeException, try)
 import           Data.Conduit.Shell                    (rm, run, shell)
 import           Data.List                             (isInfixOf)
 import           Data.Monoid                           ((<>))
-import           System.Directory                      (doesPathExist)
+import           System.Directory                      (doesDirectoryExist)
 import           System.Exit                           (exitFailure)
 import           System.FilePath.Posix                 ((</>))
 import           System.Info                           (os)
@@ -25,7 +25,7 @@ startPostgres :: StartupConfig -> DBConfig -> IO RuntimeConfig
 startPostgres (StartupConfig сlean version_) dConfig@(DBConfig p u) = do
     e <- downloadPostgres getOS version_
     let d = e </> "data"
-    exists <- doesPathExist d
+    exists <- doesDirectoryExist d
     if exists && not сlean then do
         putStrLn $ "Directory " <> d <> " must not exist"
         exitFailure
