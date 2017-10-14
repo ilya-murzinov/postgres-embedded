@@ -22,7 +22,7 @@ Starts PostgreSQL instance with given config.
 Returns @RuntimeConfig@ that is required for @stopPostgres@.
 -}
 startPostgres :: StartupConfig -> DBConfig -> IO RuntimeConfig
-startPostgres (StartupConfig сlean version_ t) dConfig@(DBConfig p u) = do
+startPostgres (StartupConfig сlean version_) dConfig@(DBConfig p u) = do
     e <- downloadPostgres getOS version_
     let d = e </> "data"
     exists <- doesPathExist d
@@ -37,7 +37,7 @@ startPostgres (StartupConfig сlean version_ t) dConfig@(DBConfig p u) = do
             show p <> "\"" <> " -l " <> (e </> "log") <> " start"
 
     let r = RuntimeConfig e d
-    checkPostgresStarted r dConfig t
+    checkPostgresStarted r dConfig
     return r
 
     where
@@ -56,8 +56,8 @@ stopPostgres (RuntimeConfig e d) = run $
         shell $ e </> "bin" </> "pg_ctl" <> " -D " <> d <> " stop" <>
                 " -m fast -t 5 -w"
 
-checkPostgresStarted :: RuntimeConfig -> DBConfig -> Int -> IO ()
-checkPostgresStarted (RuntimeConfig e _) (DBConfig p _) secs = checkPostgresStarted_ secs >>= \_ -> return ()
+checkPostgresStarted :: RuntimeConfig -> DBConfig -> IO ()
+checkPostgresStarted (RuntimeConfig e _) (DBConfig p _) = checkPostgresStarted_ 10 >>= \_ -> return ()
     where
         checkPostgresStarted_ :: Int -> IO Bool
         checkPostgresStarted_ n = do
