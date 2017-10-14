@@ -11,6 +11,7 @@ data Os = Win | OSX | Linux deriving (Eq)
 newtype Version = Version { value :: String }
 
 data StartupConfig = StartupConfig {
+    cleanDir       :: Bool,
     version        :: Version,
     startupTimeout :: Int
 }

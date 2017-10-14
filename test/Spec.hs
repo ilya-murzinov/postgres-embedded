@@ -2,7 +2,7 @@ import           Database.PostgreSQL.Embedded
 
 main :: IO ()
 main = do
-    let sConfig = StartupConfig (Version "9.6.5-1") 10
+    let sConfig = StartupConfig True (Version "9.6.5-1") 10
     let dConfig = DBConfig 46782 "postgres"
 
     -- Start Postgres downloading distribution
