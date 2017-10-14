@@ -3,11 +3,11 @@ version:             0.1.5
 description:         Library for easily running embedded PostgreSQL server for tests
 synopsis:            Library for easily running embedded PostgreSQL server for tests
 homepage:            https://github.com/ilya-murzinov/postgres-embedded
-homepage:            https://github.com/ilya-murzinov/postgres-embedded/issues
+bug-reports:         https://github.com/ilya-murzinov/postgres-embedded/issues
 license:             MIT
 license-file:        LICENSE
 author:              Ilya Murzinov
-maintainer:          murz42@gmail.com
+maintainer:          Ilya Murzinov <murz42@gmail.com>
 copyright:           2017 Ilya Murzinov
 category:            Lib
 build-type:          Simple
@@ -17,6 +17,10 @@ extra-doc-files:     README.md
                      Doc/*.md
 cabal-version:       >=1.10
 tested-with:         GHC==8.2.1, GHC==8.0.2, GHC==7.10.3, GHC==7.8.4, GHC==7.6.3, GHC==7.4.2
+
+source-repository head
+  type:     git
+  location: https://github.com/ilya-murzinov/postgres-embedded.git
 
 library
   hs-source-dirs:      src
@@ -44,7 +48,3 @@ test-suite postgres-embedded-test
                      , shell-conduit
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
-
-source-repository head
-  type:     git
-  location: git://github.com/ilya-murzinov/postgres-embedded.git
