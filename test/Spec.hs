@@ -1,10 +1,10 @@
 import           Data.ByteString.Char8        (pack)
-import           Data.Conduit.Shell           (rm, run)
 import           Data.Monoid                  ((<>))
 import           Data.String                  (fromString)
 import           Database.PostgreSQL.Simple   (Only (..), connectPostgreSQL,
                                                query_)
 import           System.FilePath.Posix        ((</>))
+import           System.Process               (system)
 
 import           Database.PostgreSQL.Embedded
 
@@ -13,7 +13,7 @@ main = do
     let sConfig = StartupConfig True (Version "9.6.5-1")
     let dConfig = DBConfig 46782 "postgres"
 
-    run $ rm "-rf" $ "~/.postgres-embedded/" </> "9.6.5-1"
+    system $ "rm" <> " -rf " <> ("~/.postgres-embedded/" </> "9.6.5-1")
 
     -- Start Postgres downloading distribution
     rc <- startPostgres sConfig dConfig

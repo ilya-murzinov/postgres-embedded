@@ -5,7 +5,7 @@ module Database.PostgreSQL.Embedded.Postgres
     ) where
 
 import           Control.Exception                     (SomeException, try)
-import           Data.Conduit.Shell                    (rm, run, shell)
+import           System.Process                        (system)
 import           Data.List                             (isInfixOf)
 import           Data.Monoid                           ((<>))
 import           System.Directory                      (doesDirectoryExist)
@@ -26,14 +26,14 @@ startPostgres (StartupConfig сlean version_) dConfig@(DBConfig p u) = do
     e <- downloadPostgres getOS version_
     let d = e </> "data"
     exists <- doesDirectoryExist d
-    if exists && not сlean then do
+    _ <- if exists && not сlean then do
         putStrLn $ "Directory " <> d <> " must not exist"
         exitFailure
-    else run $ rm "-rf" d
+    else system $ "rm" <> " -rf " <> d
 
-    run $ do
-        shell $ e </> "bin" </> "initdb" <> " -A trust -U " <> u <> " -D " <> d <> " -E UTF-8"
-        shell $ e </> "bin" </> "pg_ctl" <> " -D " <> d <> " -o \"-F -p " <>
+    _ <- do
+        _ <- system $ e </> "bin" </> "initdb" <> " -A trust -U " <> u <> " -D " <> d <> " -E UTF-8"
+        system $ e </> "bin" </> "pg_ctl" <> " -w " <> " -D " <> d <> " -o \"-F -p " <>
             show p <> "\"" <> " -l " <> (e </> "log") <> " start"
 
     let r = RuntimeConfig e d
@@ -52,16 +52,16 @@ Stops PostgreSQL instance.
 Doesn't remove data directory.
 -}
 stopPostgres :: RuntimeConfig -> IO ()
-stopPostgres (RuntimeConfig e d) = run $
-        shell $ e </> "bin" </> "pg_ctl" <> " -D " <> d <> " stop" <>
-                " -m fast -t 5 -w"
+stopPostgres (RuntimeConfig e d) = do
+        _ <- system $ e </> "bin" </> "pg_ctl" <> " -D " <> d <> " stop" <> " -m fast -t 5 -w"
+        return ()
 
 checkPostgresStarted :: RuntimeConfig -> DBConfig -> IO ()
 checkPostgresStarted (RuntimeConfig e _) (DBConfig p _) = checkPostgresStarted_ 10 >>= \_ -> return ()
     where
         checkPostgresStarted_ :: Int -> IO Bool
         checkPostgresStarted_ n = do
-            let check = run $ shell (e </> "bin" </> "pg_isready" <> " -p " <> show p <> " -h localhost") >>= \_ -> return True
+            let check = system (e </> "bin" </> "pg_isready" <> " -p " <> show p <> " -h localhost") >>= \_ -> return True
 
             res <- try check :: IO (Either SomeException Bool)
             let retry = if n > 0 then checkPostgresStarted_ (n - 1)

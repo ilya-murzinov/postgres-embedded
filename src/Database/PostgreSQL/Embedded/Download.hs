@@ -2,9 +2,10 @@ module Database.PostgreSQL.Embedded.Download
     ( downloadPostgres
     ) where
 
-import           Data.Conduit.Shell                 (cd, run, tar, unzip', wget)
+import           System.Process                     (rawSystem)
 import           Data.Monoid                        ((<>))
-import           System.Directory                   (createDirectoryIfMissing,
+import           System.Directory                   (setCurrentDirectory,
+                                                     createDirectoryIfMissing,
                                                      doesDirectoryExist,
                                                      getHomeDirectory)
 import           System.FilePath.Posix              ((</>))
@@ -27,19 +28,15 @@ downloadPostgres os_ version_ = do
     exists <- doesDirectoryExist dist
     case exists of
         True -> return dist
-        False -> run $ do
-            cd workdir
-
+        False -> do
+            setCurrentDirectory workdir
             let (aType, suffix) = binaries os_
-
-            wget "-O" tmp $ base_download_url <> v <> suffix
-
-            case aType of
-                Zip -> unzip' "-q" tmp
-                Tar -> tar "-xzf" tmp
-
+            _ <- rawSystem "wget" ["-O", tmp, base_download_url <> v <> suffix]
+            _ <- case aType of
+                Zip -> rawSystem "unzip" ["-q", tmp]
+                Tar -> rawSystem "tar" ["-xzf", tmp]
             return dist
-
+            
             where
                 binaries :: Os -> (ArchiveType, String)
                 binaries OSX   = (Zip, "-osx-binaries.zip")
