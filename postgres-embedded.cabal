@@ -1,7 +1,8 @@
 name:                postgres-embedded
-version:             0.1.7
-description:         Library for easily running embedded PostgreSQL server for tests
-synopsis:            Library for easily running embedded PostgreSQL server for tests
+version:             0.1.8
+description:         Library for easily running embedded PostgreSQL server for tests. 
+                     It downloads, runs, checks and stops PostgreSQL Database instance for you.
+synopsis:            Library for easily running embedded PostgreSQL server for tests.
 homepage:            https://github.com/ilya-murzinov/postgres-embedded
 bug-reports:         https://github.com/ilya-murzinov/postgres-embedded/issues
 license:             MIT
@@ -13,7 +14,7 @@ category:            Lib
 build-type:          Simple
 extra-doc-files:     README.md
                      CHANGELOG.md
-cabal-version:       >=1.18
+cabal-version:       >= 1.18
 tested-with:         GHC==8.2.1, GHC==8.0.2, GHC==7.10.3, GHC==7.8.4
 
 source-repository head
