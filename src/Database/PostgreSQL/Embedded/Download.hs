@@ -11,17 +11,19 @@ import           System.Directory                   (setCurrentDirectory,
 import           System.FilePath.Posix              ((</>))
 
 import           Database.PostgreSQL.Embedded.Types
+import           Database.PostgreSQL.Embedded.Exec
 
 data ArchiveType = Zip | Tar deriving (Eq)
 
-downloadPostgres :: Os -> Version -> IO FilePath
-downloadPostgres os_ version_ = do
+downloadPostgres :: Bool -> Os -> Version -> IO FilePath
+downloadPostgres silent_ os_ version_ = do
     home <- getHomeDirectory
 
     let v = value version_
     let workdir = home </> ".postgres-embedded" </> v
     let tmp = workdir </> "postgres.tmp"
     let dist = workdir </> "pgsql"
+    let execSystem = if silent_ then rawSystemSilent else rawSystem
 
     createDirectoryIfMissing True workdir
 
@@ -31,12 +33,12 @@ downloadPostgres os_ version_ = do
         False -> do
             setCurrentDirectory workdir
             let (aType, suffix) = binaries os_
-            _ <- rawSystem "wget" ["-O", tmp, base_download_url <> v <> suffix]
+            _ <- execSystem "wget" ["-O", tmp, base_download_url <> v <> suffix]
             _ <- case aType of
-                Zip -> rawSystem "unzip" ["-q", tmp]
-                Tar -> rawSystem "tar" ["-xzf", tmp]
+                Zip -> execSystem "unzip" ["-q", tmp]
+                Tar -> execSystem "tar" ["-xzf", tmp]
             return dist
-            
+
             where
                 binaries :: Os -> (ArchiveType, String)
                 binaries OSX   = (Zip, "-osx-binaries.zip")

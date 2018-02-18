@@ -21,6 +21,8 @@ data StartupConfig = StartupConfig
       cleanDir :: Bool
       -- | See @Version@
     , version  :: Version
+      -- | Silence the output of PG commands
+    , silent   :: Bool
     }
 
 -- | Config of running instance
@@ -29,6 +31,7 @@ data RuntimeConfig = RuntimeConfig
       execDir :: FilePath
       -- | Data directory
     , dataDir :: FilePath
+    , silentR :: Bool
     }
 
 -- | Database config
