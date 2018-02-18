@@ -1,9 +1,9 @@
 # Changes
 
-## 0.1.8
+## 0.1.8 (28.11.2017)
 
 Removed shell-conduit dependency as it causes lots of problems
 
-## 0.1.7
+## 0.1.7 (14.10.2017)
 
 Unstable version for testing
