@@ -9,7 +9,7 @@ license:             MIT
 license-file:        LICENSE
 author:              Ilya Murzinov
 maintainer:          Ilya Murzinov <murz42@gmail.com>
-copyright:           2017 Ilya Murzinov
+copyright:           2018 Ilya Murzinov
 category:            Lib
 build-type:          Simple
 extra-doc-files:     README.md
