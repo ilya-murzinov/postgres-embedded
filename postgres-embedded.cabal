@@ -1,5 +1,5 @@
 name:                postgres-embedded
-version:             0.1.8
+version:             0.2.0
 description:         Library for easily running embedded PostgreSQL server for tests. 
                      It downloads, runs, checks and stops PostgreSQL Database instance for you.
 synopsis:            Library for easily running embedded PostgreSQL server for tests.

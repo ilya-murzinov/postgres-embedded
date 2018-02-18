@@ -1,5 +1,9 @@
 # Changes
 
+## 0.2.0 (18.02.2018)
+
+Added option to run silently
+
 ## 0.1.8 (28.11.2017)
 
 Removed shell-conduit dependency as it causes lots of problems
