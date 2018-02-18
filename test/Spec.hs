@@ -10,7 +10,7 @@ import           Database.PostgreSQL.Embedded
 
 main :: IO ()
 main = do
-    let sConfig = StartupConfig True (Version "9.6.5-1")
+    let sConfig = StartupConfig True (Version "9.6.5-1") False
     let dConfig = DBConfig 46782 "postgres"
 
     system $ "rm" <> " -rf " <> ("~/.postgres-embedded/" </> "9.6.5-1")
