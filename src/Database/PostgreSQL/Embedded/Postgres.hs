@@ -46,7 +46,7 @@ startPostgres (StartupConfig сlean version_ silent_) dConfig@(DBConfig p u) = d
         getOS | "darwin" `isInfixOf` os = OSX
               | "linux" `isInfixOf` os = Linux
               | "win" `isInfixOf` os = Win
-              | otherwise = error $ "Unsupported platform" <> os
+              | otherwise = error $ "Unsupported platform " <> os
 
 {-|
 Stops PostgreSQL instance.
