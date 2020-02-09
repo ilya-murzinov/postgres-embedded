@@ -45,7 +45,7 @@ startPostgres (StartupConfig сlean version_ silent_) dConfig@(DBConfig p u) = d
     where
         getOS | "darwin" `isInfixOf` os = OSX
               | "linux" `isInfixOf` os = Linux
-              | "win" `isInfixOf` os = Win
+              | "mingw32" `isInfixOf` os = Win
               | otherwise = error $ "Unsupported platform" <> os
 
 {-|
